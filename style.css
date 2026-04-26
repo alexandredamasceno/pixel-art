@@ -1,0 +1,19 @@
+body {
+    text-align: center;
+}
+
+.color, .pixel {
+    border: 1px solid black;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
+
+/* #pixel-board {
+    border-collapse: collapse;
+} */
+
+.selected {
+    width: 45px;
+    height: 45px;
+}
