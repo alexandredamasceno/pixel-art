@@ -17,6 +17,9 @@ for (let index = 0; index < colorPaleteLength; index += 1) {
 
 //Função que cria o quadro de pixels para pintar
 function createPixelBoard(boardWidth, boardHeight) {
+  if ((boardHeight < 5 || boardWidth < 5) || (boardHeight > 20 || boardWidth > 20)) {
+    return alert("Largura ou comprimento inválido! Largura e Comprimento máximo de 20 unidades e mínimo de 5 unidades");
+  }
   const getThePixelBoard = document.querySelector("#pixel-board");
   getThePixelBoard.innerHTML = "";
   for (let indexH = 0; indexH < boardHeight; indexH += 1) {
