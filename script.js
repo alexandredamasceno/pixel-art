@@ -50,13 +50,32 @@ function addEventsToEachColorInPalette() {
 }
 //
 
+//Cria a lógica para pintar cada pixel com a cor escolhida na paleta de cores(com a class selected)
+
+// Pinta com a cor do elemento que tem a classe .selected o pixel que foi alvo do evento(target)
+function addColorToPixel(target) {
+  let getSelectedColor = document.querySelector(".selected");
+  target.style.backgroundColor = getSelectedColor.style.backgroundColor;
+}
+
+function addEventsToEachPixel(pixelBoard) {
+  // Adiciona evento de click no elemento com o id pixel-board, que é "avó" de todas as divs que tem a classe pixel, assim elas recebem os eventos por delegação, chamado Event Delegation.
+  pixelBoard.addEventListener("click", (event) => {
+    if (event.target.classList.contains("pixel")) {
+      addColorToPixel(event.target);
+    }
+  });
+}
+
 //Função que cria o quadro de pixels para pintar
 function createPixelBoard(boardWidth, boardHeight) {
   //Validação da largura e comprimento
   if ((boardHeight < 5 || boardWidth < 5) || (boardHeight > 20 || boardWidth > 20)) {
     return alert("Largura ou comprimento inválido! Largura e Comprimento máximo de 20 unidades e mínimo de 5 unidades");
   }
+
   const getThePixelBoard = document.querySelector("#pixel-board");
+
   getThePixelBoard.innerHTML = "";
   for (let indexH = 0; indexH < boardHeight; indexH += 1) {
     let createDivFather = document.createElement("div");// cria o comprimento
@@ -67,24 +86,11 @@ function createPixelBoard(boardWidth, boardHeight) {
     }
     getThePixelBoard.appendChild(createDivFather);
   }
+
+  addEventsToEachPixel(getThePixelBoard);
 }
 
 let getAllPixels = document.getElementsByClassName("pixel");
-
-//Cria a lógica para pintar cada pixel com a cor escolhida na paleta de cores(com a class selected)
-
-// Pinta com a cor do elemento que tem a classe .selected o pixel que foi alvo do evento(target)
-function addColorToPixel(event) {
-  let getSelectedColor = document.querySelector(".selected");
-  event.target.style.backgroundColor = getSelectedColor.style.backgroundColor;
-}
-
-function addEventsToEachPixel() {
-  // Adiciona evento de click em todas as divs que tem class Pixel
-  for (let index = 0; index < getAllPixels.length; index += 1) {
-    getAllPixels[index].addEventListener("click", addColorToPixel);
-  }
-}
 
 //Lógica de limpeza do quadro de pixel
 let getClearBoardButton = document.querySelector("#clear-board");
@@ -102,7 +108,6 @@ getInputButton.addEventListener("click", () => {
   let getWidthInput = document.querySelector("#input-width");
   let getHeightInput = document.querySelector("#input-height");
   createPixelBoard(getWidthInput.value, getHeightInput.value);
-  addEventsToEachPixel();
 });
 
 window.onload = () => {
