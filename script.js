@@ -1,5 +1,6 @@
 // Função que gera cores aleatória ao carregar a página
 const generateRandomColor = (length) => {
+  //Deixo as cores preta e branca por padrão.
   let newColors = ["rgb(0 0 0)", "#FFFFFF"];
   let initialNumber;
   let middleNumber;
@@ -8,7 +9,7 @@ const generateRandomColor = (length) => {
     initialNumber = Math.floor(Math.random() * 256);
     middleNumber = Math.floor(Math.random() * 256);
     lastNumber = Math.floor(Math.random() * 256);
-    let newRGB = `rgb(${initialNumber} ${middleNumber} ${lastNumber})`;
+    const newRGB = `rgb(${initialNumber} ${middleNumber} ${lastNumber})`;
     newColors.push(newRGB);
   }
 
@@ -19,14 +20,14 @@ const generateRandomColor = (length) => {
 function createColorsPalette() {
   const getTheColorPalette = document.querySelector("#color-palette");
   const colorPaletteLength = 10;
-  let arrayColorsPalette = generateRandomColor(colorPaletteLength);
+  const arrayColorsPalette = generateRandomColor(colorPaletteLength);
 
   for (let index = 0; index < arrayColorsPalette.length; index += 1) {
-    let createColor = document.createElement("div");
+    const createColor = document.createElement("div");
     createColor.classList.add("color");
     if (arrayColorsPalette[index] === "rgb(0 0 0)") {
       createColor.classList.add("selected");
-    } 
+    }
     createColor.style.backgroundColor = arrayColorsPalette[index];
     getTheColorPalette.appendChild(createColor);
   };
@@ -34,13 +35,13 @@ function createColorsPalette() {
 //
 
 // Lógica para adicionar a classe selected unicamente na cor escolhida da paleta de cores para depois buscarmos essa cor selecionado(com a class selected)
-let paletteColors = document.getElementsByClassName("color");
+const paletteColors = document.getElementsByClassName("color");
 
 const selectColorToUse = (event) => {
-  for (let index = 0; index < paletteColors.length; index += 1) {
-    paletteColors[index].className = "color";
-  }
-  event.target.className = "color selected";
+  const getColorSelected = document.querySelector(".selected");
+  getColorSelected.classList.remove("selected");
+
+  event.target.classList.add("selected");
 };
 // Adiciona eventos em todas as paletas de cores
 function addEventsToEachColorInPalette() {
@@ -54,7 +55,7 @@ function addEventsToEachColorInPalette() {
 
 // Pinta com a cor do elemento que tem a classe .selected o pixel que foi alvo do evento(target)
 function addColorToPixel(target) {
-  let getSelectedColor = document.querySelector(".selected");
+  const getSelectedColor = document.querySelector(".selected");
   target.style.backgroundColor = getSelectedColor.style.backgroundColor;
 }
 
@@ -78,7 +79,7 @@ function createPixelBoard(boardWidth, boardHeight) {
 
   getThePixelBoard.innerHTML = "";
   for (let indexH = 0; indexH < boardHeight; indexH += 1) {
-    let createDivFather = document.createElement("div");// cria o comprimento
+    const createDivFather = document.createElement("div");// cria o comprimento
     for (let indexW = 0; indexW < boardWidth; indexW += 1) {
       let createChildDiv = document.createElement("div");// cria a largura
       createChildDiv.className = "pixel";
@@ -86,14 +87,12 @@ function createPixelBoard(boardWidth, boardHeight) {
     }
     getThePixelBoard.appendChild(createDivFather);
   }
-
-  addEventsToEachPixel(getThePixelBoard);
 }
 
-let getAllPixels = document.getElementsByClassName("pixel");
+const getAllPixels = document.getElementsByClassName("pixel");
 
 //Lógica de limpeza do quadro de pixel
-let getClearBoardButton = document.querySelector("#clear-board");
+const getClearBoardButton = document.querySelector("#clear-board");
 getClearBoardButton.addEventListener("click", () => {
   for (let index = 0; index < getAllPixels.length; index += 1) {
     getAllPixels[index].style.backgroundColor = "white";
@@ -102,7 +101,7 @@ getClearBoardButton.addEventListener("click", () => {
 //
 
 // Cria lógica para o usuário escolher o tamanho do quadro de pixel.
-let getInputButton = document.querySelector("#input-button");
+const getInputButton = document.querySelector("#input-button");
 
 getInputButton.addEventListener("click", () => {
   let getWidthInput = document.querySelector("#input-width");
@@ -114,5 +113,8 @@ window.onload = () => {
   createColorsPalette();
   addEventsToEachColorInPalette();
   createPixelBoard(5, 5);
-  addEventsToEachPixel();
+
+  //adiciona lógica de Event Delegation. Uma vez adicionado o Event no elemento "pai", não importa se os elementos "filhos" aumentem ou diminuam, o Event continuará funcionando do mesmo jeito para todos.
+  const getThePixelBoard = document.querySelector("#pixel-board");
+  addEventsToEachPixel(getThePixelBoard);
 };
