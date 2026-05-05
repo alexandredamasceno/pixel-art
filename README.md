@@ -20,7 +20,7 @@
 
 Para garantir a qualidade do código, utilizei neste projeto o `ESLint`.
 Assim o código estará alinhado com as boas práticas de desenvolvimento, sendo mais legível
-e de fácil manutenção! Para rodá-lo localmente no projeto, execute os comandos abaixo:
+e de fácil manutenção! Para rodá-lo localmente no projeto, execute o comando abaixo:
 
 ```bash
 npm run lint
