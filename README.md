@@ -6,6 +6,8 @@
 
 - Manipular o Javascript
 
+- Event Listener e Event Delegation
+
 - ---
 
 ## O que foi desenvolvido
