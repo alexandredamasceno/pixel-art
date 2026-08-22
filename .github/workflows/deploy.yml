@@ -1,0 +1,83 @@
+name: CI/CD - Lint e Deploy no GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  # Permite rodar manualmente pela aba Actions
+  workflow_dispatch:
+
+# Permissões mínimas necessárias para publicar no GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita deploys concorrentes; deixa o mais recente terminar,
+# mas cancela execuções pendentes na fila
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # ------------------------------------------------------------------
+  # JOB 1 - CI: instala dependências e roda o ESLint
+  # Roda em push E em pull_request (valida antes de mesclar)
+  # ------------------------------------------------------------------
+  lint:
+    name: Lint (ESLint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar ESLint
+        run: npm run lint
+
+  # ------------------------------------------------------------------
+  # JOB 2 - Build: prepara o artefato estático (sem bundler,
+  # pois o projeto é HTML/CSS/JS puro)
+  # Só roda em push na main, depois que o lint passar
+  # ------------------------------------------------------------------
+  build:
+    name: Build (preparar artefato estático)
+    needs: lint
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empacotar artefato para o Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Raiz do projeto: onde estão index.html, style.css, script.js
+          path: "."
+
+  # ------------------------------------------------------------------
+  # JOB 3 - Deploy: publica o artefato no GitHub Pages
+  # ------------------------------------------------------------------
+  deploy:
+    name: Deploy no GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
